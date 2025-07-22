@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>台站進出紀錄表單</title>
+  <style>
+    body {
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      background: #eef8ff;
+      padding: 20px;
+    }
+
+    form {
+      background: #fff;
+      max-width: 700px;
+      margin: auto;
+      padding: 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #003366;
+      font-size: 24px;
+    }
+
+    label {
+      display: block;
+      margin: 15px 0 5px;
+      font-weight: 600;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="time"],
+    select {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1.5px solid #ccc;
+      border-radius: 8px;
+    }
+
+    .radio-group {
+      margin-top: 8px;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .radio-option input[type="radio"] {
+      margin-right: 8px;
+      transform: scale(1.2);
+    }
+
+    .radio-option input[type="text"] {
+      margin-left: 10px;
+      flex: 1;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      background: #007bff;
+      color: #fff;
+      font-size: 18px;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    #successMsg {
+      margin-top: 15px;
+      color: green;
+      font-weight: bold;
+      display: none;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<form id="entryForm">
+  <h2>台站進出紀錄表單</h2>
+
+  <label for="date">日期</label>
+  <input type="date" id="date" required>
+  <input type="hidden" name="entry.1689988318_year" id="year">
+  <input type="hidden" name="entry.1689988318_month" id="month">
+  <input type="hidden" name="entry.1689988318_day" id="day">
+
+  <label>地點</label>
+  <select name="entry.420545588" required>
+    <option value="">請選擇</option>
+    <option value="成功同頻轉播站">成功同頻轉播站</option>
+    <option value="卑南發射臺">卑南發射臺</option>
+    <option value="鯉魚山發射臺">鯉魚山發射臺</option>
+  </select>
+
+  <label>事由（攜帶設備）</label>
+  <input type="text" name="entry.758517373" required>
+
+  <label for="enterTime">進入台站時間</label>
+  <input type="time" id="enterTime" required>
+  <input type="hidden" name="entry.1439788759_hour" id="enterHour">
+  <input type="hidden" name="entry.1439788759_minute" id="enterMinute">
+
+  <label for="leaveTime">離開台站時間</label>
+  <input type="time" id="leaveTime" required>
+  <input type="hidden" name="entry.1508464563_hour" id="leaveHour">
+  <input type="hidden" name="entry.1508464563_minute" id="leaveMinute">
+
+  <label>單位</label>
+  <div class="radio-group">
+    <div class="radio-option"><input type="radio" name="entry.1512972577" value="教育電臺臺東分臺" required>教育電臺臺東分臺</div>
+    <div class="radio-option"><input type="radio" name="entry.1512972577" value="教育電臺花蓮分臺">教育電臺花蓮分臺</div>
+    <div class="radio-option"><input type="radio" name="entry.1512972577" value="教育電臺高雄分臺">教育電臺高雄分臺</div>
+    <div class="radio-option"><input type="radio" name="entry.1512972577" value="教育電臺彰化分臺">教育電臺彰化分臺</div>
+    <div class="radio-option">
+      <input type="radio" name="entry.1512972577" value="__other_option__">其他：
+      <input type="text" name="entry.1512972577.other_option_response">
+    </div>
+  </div>
+
+  <label>姓名</label>
+  <div class="radio-group">
+    <div class="radio-option"><input type="radio" name="entry.1867831101" value="胡美足" required>胡美足</div>
+    <div class="radio-option"><input type="radio" name="entry.1867831101" value="詹凱雯">詹凱雯</div>
+    <div class="radio-option"><input type="radio" name="entry.1867831101" value="陳建和">陳建和</div>
+    <div class="radio-option"><input type="radio" name="entry.1867831101" value="陳信吉">陳信吉</div>
+    <div class="radio-option"><input type="radio" name="entry.1867831101" value="陳宥任">陳宥任</div>
+    <div class="radio-option">
+      <input type="radio" name="entry.1867831101" value="__other_option__">其他：
+      <input type="text" name="entry.1867831101.other_option_response">
+    </div>
+  </div>
+
+  <label>身分證號（英文+前4碼）</label>
+  <input type="text" name="entry.1299832854" required>
+
+  <button type="submit">送出</button>
+  <p id="successMsg">✅ 資料已成功送出！</p>
+</form>
+
+<script>
+  function handleDateSplit() {
+    const date = document.getElementById("date").value;
+    const enter = document.getElementById("enterTime").value;
+    const leave = document.getElementById("leaveTime").value;
+
+    if (!date || !enter || !leave) return false;
+
+    const [year, month, day] = date.split("-");
+    document.getElementById("year").value = year;
+    document.getElementById("month").value = month;
+    document.getElementById("day").value = day;
+
+    const [eh, em] = enter.split(":");
+    const [lh, lm] = leave.split(":");
+
+    document.getElementById("enterHour").value = eh;
+    document.getElementById("enterMinute").value = em;
+    document.getElementById("leaveHour").value = lh;
+    document.getElementById("leaveMinute").value = lm;
+
+    return true;
+  }
+
+  document.getElementById("entryForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    if (!handleDateSplit()) {
+      alert("請填寫完整日期與時間");
+      return;
+    }
+
+    const form = e.target;
+    const data = new FormData(form);
+
+    fetch("https://docs.google.com/forms/d/e/1FAIpQLSdocr9WIf5yrPfkK3a6m6ecBPC0Uc0ysP2f8HNDFgP8eZUo1Q/formResponse", {
+      method: "POST",
+      mode: "no-cors",
+      body: data
+    }).then(() => {
+      document.getElementById("successMsg").style.display = "block";
+      form.reset();
+    }).catch(() => {
+      alert("❌ 發送失敗，請稍後再試。");
+    });
+  });
+</script>
+
+</body>
+</html>
